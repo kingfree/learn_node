@@ -1,8 +1,9 @@
 const fs = require('fs');
 var stdin = process.stdin;
 var stdout = process.stdout;
+var dir = process.cwd();
 
-fs.readdir(process.cwd(), function (err, files) {
+fs.readdir(dir, function (err, files) {
     if (!files.length) {
         return console.log('    \033[31m 当前目录下没有文件\033[39m');
     }
@@ -11,7 +12,7 @@ fs.readdir(process.cwd(), function (err, files) {
 
     function file(i) {
         var filename = files[i];
-        var path = __dirname + '/' + filename;
+        var path = dir + '/' + filename;
         fs.stat(path, function (err, stat) {
             stats[i] = stat;
             if (stat.isDirectory()) {
@@ -39,7 +40,7 @@ fs.readdir(process.cwd(), function (err, files) {
         var choice = Number(data);
         var filename = files[choice];
         if (filename) {
-            var path = __dirname + '/' + filename;
+            var path = dir + '/' + filename;
             stdin.pause();
             if (stats[choice].isDirectory()) {
                 fs.readdir(path, function (err, files) {
