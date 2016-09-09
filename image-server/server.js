@@ -8,7 +8,14 @@ var server = http.createServer(function (req, res) {
         res.writeHead(200, {
             'Content-Type': type
         });
-        fs.createReadStream(path).pipe(res);
+        // fs.createReadStream(path).pipe(res);
+        fs.createReadStream(path)
+            .on('data', function (data) {
+                res.write(data);
+            })
+            .on('end', function () {
+                res.end();
+            });
     }
 
     if (req.method == 'GET' && req.url.substr(0, 7) == '/images' && req.url.substr(-4) == '.jpg') {
