@@ -1,0 +1,11 @@
+{
+  "name": "tcp_chat",
+  "version": "0.0.1",
+  "description": "TCP Server for online chat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
