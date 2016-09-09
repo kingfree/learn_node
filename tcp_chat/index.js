@@ -6,6 +6,14 @@ var users = {};
 var server = net.createServer(function (conn) {
     var nickname, i;
 
+    function broadcast(message, exceptMe) {
+        for (i in users) {
+            if (!exceptMe || i != nickname) {
+                users[i].write(message);
+            }
+        }
+    }
+
     conn.setEncoding('utf8');
 
     conn.write('\n > 欢迎使用    \033[92mNode Chat\033[39m!' +
@@ -22,22 +30,17 @@ var server = net.createServer(function (conn) {
             } else {
                 nickname = data;
                 users[nickname] = conn;
-                for (i in users) {
-                    users[i].write('\033[90m > ' + nickname + ' 上线了！   \033[39m\n');
-                }
+                broadcast('\033[90m > ' + nickname + ' 上线了！   \033[39m\n');
             }
         } else {
-            for (i in users) {
-                if (i != nickname) {
-                    users[i].write('\033[96m > ' + nickname + ': \033[39m' + data + '\n');
-                }
-            }
+            broadcast('\033[96m > ' + nickname + ': \033[39m' + data + '\n', true);
         }
     });
 
     conn.on('close', function () {
         count--;
         delete users[nickname];
+        broadcast('\033[90m > ' + nickname + ' 已下线    \033[39m\n')
     });
 });
 
