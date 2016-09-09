@@ -1,6 +1,6 @@
 var http = require('http');
 var fs = require('fs');
-const ROOT_DIR = __dirname;
+const ROOT_DIR = __dirname + '/www';
 
 var server = http.createServer(function (req, res) {
 
