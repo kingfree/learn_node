@@ -1,6 +1,7 @@
 var connect = require('connect');
 var http = require('http');
 var fs = require('fs');
+var time = require('./request-time');
 
 const ROOT_DIR = __dirname + '/www';
 
@@ -13,10 +14,7 @@ function serve(res, path, type) {
     fs.createReadStream(path).pipe(res);
 }
 
-app.use(function (req, res, next) {
-    console.info(req.method, req.url);
-    next();
-});
+app.use(time({time: 500}));
 
 app.use(function (req, res, next) {
     if (req.method == 'GET' && req.url.substr(0, 7) == '/images' && req.url.substr(-4) == '.jpg') {
@@ -36,6 +34,17 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
     if (req.method == 'GET' && req.url == '/') {
         serve(res, ROOT_DIR + '/index.html', 'text/html');
+    } else {
+        next();
+    }
+});
+
+app.use(function (req, res, next) {
+    if (req.method == 'GET' && req.url == '/wait') {
+        setTimeout(function () {
+            res.writeHead(200);
+            res.end('Wait...');
+        }, 1000);
     } else {
         next();
     }
