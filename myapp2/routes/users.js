@@ -7,7 +7,7 @@ router.all('/', function (req, res, next) {
 });
 
 /* GET users listing. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   res.send('SELECT');
 }).post('/', function (req, res) {
   res.send('INSERT');
