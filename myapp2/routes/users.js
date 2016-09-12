@@ -9,17 +9,11 @@ router.all('/', function (req, res, next) {
 /* GET users listing. */
 router.get('/', function(req, res) {
   res.send('SELECT');
-});
-
-router.post('/', function (req, res) {
+}).post('/', function (req, res) {
   res.send('INSERT');
-});
-
-router.put('/', function (req, res) {
+}).put('/', function (req, res) {
   res.send('UPDATE');
-});
-
-router.delete('/', function (req, res) {
+}).delete('/', function (req, res) {
   res.send('DELETE');
 });
 
