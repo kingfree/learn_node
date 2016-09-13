@@ -72,7 +72,8 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('announcement', '<i>' + name + '</i> 上线了！');
   });
 
-  socket.on('text', function (msg) {
+  socket.on('text', function (msg, cb) {
     socket.broadcast.emit('text', socket.nickname, msg);
+    cb(Date.now());
   });
 });

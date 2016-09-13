@@ -24,9 +24,12 @@ window.onload = function () {
 
   var input = document.getElementById('text');
   document.getElementById('form').onsubmit = function () {
-    addMsg('我', input.value);
+    var li = addMsg('我', input.value);
 
-    socket.emit('text', input.value);
+    socket.emit('text', input.value, function (date) {
+      li.className = 'confirmed';
+      li.title = date;
+    });
 
     input.value = '';
     input.focus();
