@@ -64,6 +64,11 @@ server.listen(3000);
 
 var io = socketio.listen(server);
 
-io.sockets.on('connection', function (sokect) {
-  console.log(sokect.id, '已连接');
+io.on('connection', function (socket) {
+  console.log(socket.id, '已连接');
+
+  socket.on('join', function (name) {
+    socket.nickname = name;
+    socket.broadcast.emit('announcement', name + ' 上线了！');
+  });
 });
