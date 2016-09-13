@@ -6,26 +6,73 @@ html(lang='zh-CN')
     script.
       var lastMsg;
       window.onload = function () {
-        console.log('load');
         var ws = new WebSocket('ws://localhost:3001');
+        var initialized;
+
         ws.onopen = function () {
           ping();
         };
+
         ws.onmessage = function (ev) {
           console.log(ev.data);
-          document.getElementById('latency').innerHTML = new Date - lastMsg;
-          setTimeout(function() {
-            ping();
-          }, 1000);
+          if (ev.data == 'pong') {
+            document.getElementById('latency').innerHTML = new Date - lastMsg;
+            setTimeout(function () {
+              ping();
+            }, 10000);
+          } else {
+            try {
+              var obj = JSON.parse(ev.data);
+              if (!initialized) {
+                initialized = true;
+                for (var id in obj) {
+                  move(id, obj[id]);
+                }
+              } else {
+                if (obj.type == 'disconnect') {
+                  remove(obj.id);
+                } else {
+                  move(obj.id, obj.pos);
+                }
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
         };
+
+        document.onmousemove = function (ev) {
+          ws.send(JSON.stringify({x: ev.clientX, y: ev.clientY}));
+        };
+
         function ping() {
           lastMsg = +new Date;
           console.log(lastMsg);
           ws.send('ping');
         }
+
+        function move(id, pos) {
+          console.log(id, pos);
+          var cursor = document.getElementById('cursor-' + id);
+          if (!cursor) {
+            cursor = document.createElement('img');
+            cursor.id = 'cursor-' + id;
+            cursor.src = '/images/cursor.png';
+            cursor.style.position = 'absolute';
+            document.body.appendChild(cursor);
+          }
+          cursor.style.left = pos.x + 'px';
+          cursor.style.top = pos.y + 'px';
+        }
+
+        function remove(id) {
+          console.log(id);
+          var cursor = document.getElementById('cursor-' + id);
+          cursor.parentNode.removeChild(cursor);
+        }
       };
   body
-    h1 WebSocket Echo
+    h1 WebSocket 应用
     h2 延迟:
       span#latency
       | ms
