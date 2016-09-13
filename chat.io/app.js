@@ -69,6 +69,10 @@ io.on('connection', function (socket) {
 
   socket.on('join', function (name) {
     socket.nickname = name;
-    socket.broadcast.emit('announcement', name + ' 上线了！');
+    socket.broadcast.emit('announcement', '<i>' + name + '</i> 上线了！');
+  });
+
+  socket.on('text', function (msg) {
+    socket.broadcast.emit('text', socket.nickname, msg);
   });
 });
