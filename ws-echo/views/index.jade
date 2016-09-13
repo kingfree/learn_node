@@ -1,0 +1,31 @@
+doctype html
+html(lang='zh-CN')
+  head
+    title= WebSocket
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script.
+      var lastMsg;
+      window.onload = function () {
+        console.log('load');
+        var ws = new WebSocket('ws://localhost:3001');
+        ws.onopen = function () {
+          ping();
+        };
+        ws.onmessage = function (ev) {
+          console.log(ev.data);
+          document.getElementById('latency').innerHTML = new Date - lastMsg;
+          setTimeout(function() {
+            ping();
+          }, 1000);
+        };
+        function ping() {
+          lastMsg = +new Date;
+          console.log(lastMsg);
+          ws.send('ping');
+        }
+      };
+  body
+    h1 WebSocket Echo
+    h2 延迟:
+      span#latency
+      | ms
