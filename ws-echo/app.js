@@ -42,12 +42,12 @@ server.on('connection', function (socket) {
   });
 
   socket.on('close', function () {
-    delete positions[socket.id];
-    delete clients[socket.id];
     broadcast(JSON.stringify({
       type: 'disconnect',
       id: socket.id
     }));
+    delete positions[socket.id];
+    delete clients[socket.id];
   });
 
   function broadcast(msg) {

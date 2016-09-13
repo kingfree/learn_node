@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title= 'Chat.IO'
+    script(src='https://cdn.socket.io/socket.io-1.4.5.js')
+    script(src='http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js')
+    script(src='http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js')
+    script(src='/javascripts/chat.js')
+    link(rel='stylesheet', href='http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css')
+  body
+    h1 Chat.IO
+    form#form.form-inline
+      div.from-group
+        ul#messages
+      div#chat.from-group
+        input(type=text)#line.form-control.col-sm-6
+        button.btn.btn-primary 发送
