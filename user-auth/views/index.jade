@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  if (authenticated)
+    h2 你好, #(me.nickname)
+    a(href='/logout').btn.btn-default 注销
+  else
+    h2 欢迎
+    ul
+      li: a(href='/login').btn.btn-primary 登录
+      li: a(href='/register').btn.btn-success 注册

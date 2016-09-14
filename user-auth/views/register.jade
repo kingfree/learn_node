@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  form.form-horizontal(role='form',action='/register',method='POST')
+    fieldset
+      legend 注册
+      .form-group
+        label.col-sm-2.control-label(for='username') 用户名
+        .col-sm-10
+          input#username.form-control(type='text', name='user[username]', placeholder='用户名')
+      .form-group
+        label.col-sm-2.control-label(for='nickname') 昵称
+        .col-sm-10
+          input#nickname.form-control(type='text', name='user[nickname]', placeholder='昵称')
+      .form-group
+        label.col-sm-2.control-label(for='email') 邮箱
+        .col-sm-10
+          input#email.form-control(type='email', name='user[email]' placeholder='邮箱')
+      .form-group
+        label.col-sm-2.control-label(for='password') 密码
+        .col-sm-10
+          input#password.form-control(type='password', name='user[password]', placeholder='密码')
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          button.btn.btn-success(type='submit') 注册
+          a.btn.btn-primary(href='/login') 登录
+          a.btn.btn-default.pull-right(href='/') 主页
