@@ -4,59 +4,76 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
 var http = require("http");
+var mongodb = require("mongodb");
+var passwordHash = require("password-hash");
 
 var app = express();
+var server = new mongodb.Server('127.0.0.1', 27017);
+var db = new mongodb.Db('user-auth', server);
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+db.open(function (err, client) {
+  if (err) throw err;
+  console.log('已连接到数据库');
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  app.users = client.collection('users');
 });
 
-// error handlers
+app.get('/', function (req, res, next) {
+  res.render('index', {title: '主页', authenticated: false});
+});
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+app.get('/login', function (req, res, next) {
+  res.render('login', {title: '登录'});
+});
+
+app.get('/login/:username', function (req, res, next) {
+  res.render('login', {title: '登录', username: req.params.username})
+});
+
+app.get('/register', function (req, res, next) {
+  res.render('register', {title: '注册'});
+});
+
+app.post('/register', function (req, res, next) {
+  var user = {
+    username: req.body.username,
+    nickname: req.body.nickname,
+    email: req.body.email,
+    password: generatePassword(req.body.password)
+  };
+  app.users.insertOne(user, function (err, result) {
+    if (err) return next(err);
+    res.redirect('/login/' + result.ops[0].username);
   });
-}
+});
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: {}
+    error: err
   });
 });
 
-var server = http.createServer(app);
+app.listen(3000, function () {
+  console.log('服务监听在 *:3000');
+});
 
-server.listen(3000);
+function generatePassword(password) {
+  return passwordHash.generate(password);
+}
+
+function checkPassword(password, hashedPassword) {
+  return passwordHash.verify(password, hashedPassword);
+}
