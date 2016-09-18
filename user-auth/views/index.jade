@@ -2,8 +2,8 @@ extends layout
 
 block content
   h1= title
-  if (authenticated)
-    h2 你好, #(me.nickname)
+  if authenticated
+    h2 你好, #{me.nickname}
     a(href='/logout').btn.btn-default 注销
   else
     h2 欢迎
